@@ -44,7 +44,7 @@ if __name__ == '__main__':
     textpos = text.get_rect()
     textpos.centerx = background.get_rect().centerx
     background.blit(text, textpos)
-
+    
     # Blit everything to the screen
     screen.blit(background, (0, 0))
     pygame.display.flip()
@@ -70,11 +70,13 @@ if __name__ == '__main__':
             if event.type == QUIT:
                 run = False
 
+        # for i in range(10):
+        #     for j in range(10): # on parcourt les 2 dimensions
+        #         pygame.draw.rect(10, [255]*3, [i*10, j*10, 10, 10], 1)
+
         screen.blit(background, (0, 0))
         pygame.display.flip()
-        # for i in range(nb_cases_cote):
-        #     for j in range(nb_cases_cote): # on parcourt les 2 dimensions
-        #         pygame.draw.rect(surface_plateau, [255]*3, [i*nb_cases_cote, j*nb_cases_cote, nb_cases_cote, nb_cases_cote], 1)
+        
 
 def niveau():
     level = input("Choisissez votre niveau : facile, moyen ou difficile : ")
