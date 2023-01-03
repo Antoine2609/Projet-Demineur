@@ -6,7 +6,18 @@ from pygame.locals import QUIT
 import class_case
 import class_tableaudejeu
 
-if __name__ == '__main__':
+def niveau():
+    level = input("Choisissez votre niveau : facile, moyen ou difficile : ")
+    if level == 'facile':
+        return 10 # 10 x 10 (100 cases)
+    elif level == 'moyen':
+        return 15 # 15 x 15 (225 cases)
+    elif level == 'difficile':
+        return 20 # 20 x 20 (400 cases)
+    else:
+        niveau()
+
+def main():
     # initialisation du jeu avec 10 lignes, 15 colonnes et 25 mines
     sim = class_tableaudejeu.TableauDeJeu(10, 15, 25)
     # Toutes les coordonnées sont en base 0 (i.e. de 0 à (nb_lignes - 1))
@@ -26,12 +37,17 @@ if __name__ == '__main__':
 
     print('Démonstration terminée.')
 
+    # nb_cases_cote = niveau()
+    
+    nb_cases_cote = 10
+    tab_jeu = class_tableaudejeu.TableauDeJeu(nb_cases_cote, nb_cases_cote, 25)
+
     # Initialise screen
     pygame.init()
-    longueur_fenetre = 800
-    largeur_fenetre = 600
-    screen = pygame.display.set_mode((longueur_fenetre, largeur_fenetre))
-    pygame.display.set_caption('Démineur')
+    largeur_fenetre = 16 * nb_cases_cote + 20
+    hauteur_fenetre = 16 * nb_cases_cote + 60
+    screen = pygame.display.set_mode((largeur_fenetre, hauteur_fenetre))
+    pygame.display.set_caption('Jeu du démineur')
 
     # Fill background
     background = pygame.Surface(screen.get_size())
@@ -47,19 +63,43 @@ if __name__ == '__main__':
     
     # Blit everything to the screen
     screen.blit(background, (0, 0))
-    pygame.display.flip()
     
     # création de la fenêtre
     
     # fenetre.fill((250,0,0)) # couleur de la fenêtre
-    # pygame.display.set_caption("Jeu du démineur") # définition de la fenêtre
 
-    # # création de la surface du tableau de jeu
-    # width = height = 500
-    # surface_plateau = pygame.surface((width, height), flags=0, depth=0, masks=None)
-    # surface_plateau = pygame.Surface.fill((250,250,250)) # couleur de la surface
+    # smallfont = pygame.font.SysFont('Corbel',35)
+    # text = smallfont.render('QUIT', True, (255,255,255))
+    recouverte = pygame.image.load("images/nonpassee.bmp")
+    drapeau = pygame.image.load("images/drapeau.bmp")
+    vide = pygame.image.load("images/rien.bmp")
+    un = pygame.image.load("images/1.bmp")
+    deux = pygame.image.load("images/2.bmp")
+    trois = pygame.image.load("images/3.bmp")
+    quatre = pygame.image.load("images/4.bmp")
+    cinq = pygame.image.load("images/5.bmp")
+    six = pygame.image.load("images/6.bmp")
+    sept = pygame.image.load("images/7.bmp")
+    huit = pygame.image.load("images/8.bmp")
+    bombe1 = pygame.image.load("images/mine.bmp")
+    bombe2 = pygame.image.load("images/mine2.bmp")
 
-    # nb_cases_cote = niveau()
+    colonne = 0
+    ligne = 0
+
+    for line in tab_jeu._tab:
+        for case in line:
+            if colonne >= nb_cases_cote:
+                colonne = 0
+                ligne += 1
+            screen.blit(recouverte, (10 + colonne * 16, 40 + ligne * 16))
+            colonne += 1
+        
+
+    # boutton = pygame.image.load("images/nonpassee.bmp")
+    # screen.blit(boutton, (200,200))
+
+    pygame.display.flip()
 
     run = True
 
@@ -69,25 +109,30 @@ if __name__ == '__main__':
         for event in events:
             if event.type == QUIT:
                 run = False
-
-        # for i in range(10):
-        #     for j in range(10): # on parcourt les 2 dimensions
-        #         pygame.draw.rect(10, [255]*3, [i*10, j*10, 10, 10], 1)
-
-        screen.blit(background, (0, 0))
-        pygame.display.flip()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                run = False
         
+        # if boutton.get_rect().collidepoint(pygame.mouse.get_pos()):
+        #     boutton = pygame.image.load("images/nonpassee.bmp")
+        
+        # print(boutton.get_rect().bottomleft)
+        # print(pygame.mouse.get_pos())
 
-def niveau():
-    level = input("Choisissez votre niveau : facile, moyen ou difficile : ")
-    if level == 'facile':
-        return 10 # 10 x 10 (100 cases)
-    elif level == 'moyen':
-        return 15 # 15 x 15 (225 cases)
-    elif level == 'difficile':
-        return 20 # 20 x 20 (400 cases)
-    else:
-        niveau()
+        # for i in range(nb_cases_cote):
+        #     for j in range(nb_cases_cote): # on parcourt les 2 dimensions
+        #         pygame.draw.rect(nb_cases_cote, [255]*3, [i*nb_cases_cote, j*nb_cases_cote, nb_cases_cote, nb_cases_cote], 1)
+
+        # pygame.draw.rect(screen,(170,170,170),[100,100,60,60])
+        # screen.blit(text, (100,100))
+        # screen.blit(boutton, (200,200))
+        pygame.display.update()
+
+        # screen.blit(background, (0, 0))
+        # pygame.display.flip()
+
+
+if __name__ == '__main__':
+    main()
 
 
 
