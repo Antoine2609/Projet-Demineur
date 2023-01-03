@@ -2,6 +2,7 @@
 from random import randint
 import pygame
 from pygame.locals import QUIT
+import math
 
 import class_case
 import class_tableaudejeu
@@ -63,13 +64,7 @@ def main():
     
     # Blit everything to the screen
     screen.blit(background, (0, 0))
-    
-    # création de la fenêtre
-    
-    # fenetre.fill((250,0,0)) # couleur de la fenêtre
 
-    # smallfont = pygame.font.SysFont('Corbel',35)
-    # text = smallfont.render('QUIT', True, (255,255,255))
     recouverte = pygame.image.load("images/nonpassee.bmp")
     drapeau = pygame.image.load("images/drapeau.bmp")
     vide = pygame.image.load("images/rien.bmp")
@@ -81,8 +76,7 @@ def main():
     six = pygame.image.load("images/6.bmp")
     sept = pygame.image.load("images/7.bmp")
     huit = pygame.image.load("images/8.bmp")
-    bombe1 = pygame.image.load("images/mine.bmp")
-    bombe2 = pygame.image.load("images/mine2.bmp")
+    perdu = pygame.image.load("images/perdu.bmp")
 
     colonne = 0
     ligne = 0
@@ -94,10 +88,6 @@ def main():
                 ligne += 1
             screen.blit(recouverte, (10 + colonne * 16, 40 + ligne * 16))
             colonne += 1
-        
-
-    # boutton = pygame.image.load("images/nonpassee.bmp")
-    # screen.blit(boutton, (200,200))
 
     pygame.display.flip()
 
@@ -109,74 +99,61 @@ def main():
         for event in events:
             if event.type == QUIT:
                 run = False
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                run = False
-        
-        # if boutton.get_rect().collidepoint(pygame.mouse.get_pos()):
-        #     boutton = pygame.image.load("images/nonpassee.bmp")
-        
-        # print(boutton.get_rect().bottomleft)
-        # print(pygame.mouse.get_pos())
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
+                mouse = pygame.mouse.get_pos()
+                pos_x = mouse[0]
+                pos_y = mouse[1]
+                col = (pos_x - 10)//16
+                lig = (pos_y - 40)//16
 
-        # for i in range(nb_cases_cote):
-        #     for j in range(nb_cases_cote): # on parcourt les 2 dimensions
-        #         pygame.draw.rect(nb_cases_cote, [255]*3, [i*nb_cases_cote, j*nb_cases_cote, nb_cases_cote, nb_cases_cote], 1)
+                case = tab_jeu.get_case(lig, col)
 
-        # pygame.draw.rect(screen,(170,170,170),[100,100,60,60])
-        # screen.blit(text, (100,100))
-        # screen.blit(boutton, (200,200))
+                if not case.get_drapeau() and case.get_case_recouverte():
+                    tab_jeu.decouvrir_case(lig, col)
+                    case = tab_jeu.get_case(lig, col)
+
+                    if case.get_mine():
+                        screen.blit(perdu, (10 + col * 16, 40 + lig * 16))
+                        run = False
+                        print('game over')
+                    else:
+                        n = tab_jeu.nbr_mines_adjacentes_a_case(lig, col)
+                        if n == 0:
+                            screen.blit(vide, (10 + col * 16, 40 + lig * 16))
+                        elif n == 1:
+                            screen.blit(un, (10 + col * 16, 40 + lig * 16))
+                        elif n == 2:
+                            screen.blit(deux, (10 + col * 16, 40 + lig * 16))
+                        elif n == 3:
+                            screen.blit(trois, (10 + col * 16, 40 + lig * 16))
+                        elif n == 4:
+                            screen.blit(quatre, (10 + col * 16, 40 + lig * 16))
+                        elif n == 5:
+                            screen.blit(cinq, (10 + col * 16, 40 + lig * 16))
+                        elif n == 6:
+                            screen.blit(six, (10 + col * 16, 40 + lig * 16))
+                        elif n == 7:
+                            screen.blit(sept, (10 + col * 16, 40 + lig * 16))
+                        elif n == 8:
+                            screen.blit(huit, (10 + col * 16, 40 + lig * 16))
+            if event.type == pygame.MOUSEBUTTONDOWN and event.button == 3:
+                mouse = pygame.mouse.get_pos()
+                pos_x = mouse[0]
+                pos_y = mouse[1]
+                col = (pos_x - 10)//16
+                lig = (pos_y - 40)//16
+
+                case = tab_jeu.get_case(lig, col)
+
+                if case.get_drapeau():
+                    screen.blit(recouverte, (10 + col * 16, 40 + lig * 16))
+                else:
+                    screen.blit(drapeau, (10 + col * 16, 40 + lig * 16))
+
+                tab_jeu._tab[lig][col].set_drapeau()
+
         pygame.display.update()
-
-        # screen.blit(background, (0, 0))
-        # pygame.display.flip()
 
 
 if __name__ == '__main__':
     main()
-
-
-
-
-
-
-
-
-'''
-run = True
-
-nb_cases_cote = niveau()
-
-# min renvoie la valeur minimale d'une liste, ici la dimension de la fenêtre
-taille_case = min(fenetre.get_size()) // nb_cases_cote - (min(fenetre.get_size()) // nb_cases_cote // nb_cases_cote)
-
-
-while run:
-    fenetre.fill((0,0,0)) # couleur de la fenêtre
-
-    events = pygame.event.get()
-    for event in events:
-        if event.type == QUIT:
-            run = False
-
-    for x in range(nb_cases_cote):
-        for y in range(nb_cases_cote): # on parcourt les 2 dimensions
-
-            pygame.draw.rect(fenetre, [255]*3, [x*taille_case, y*taille_case, taille_case, taille_case], 1) # dessin du rect 
-
-            lettre = font.render("?", True, [255]*3) # on crée la lettre
-            lettre_rect = lettre.get_rect() # je recupere le rect
-            lettre_rect.center = [x*taille_case + 1/2*taille_case, y*taille_case + 1/2*taille_case] # je place le centre du rect au milieu de la case
-            fenetre.blit(lettre , lettre_rect ) # on blit le tout
-
-    pygame.display.flip()
-
-'''
-'''
-côté interface :
-- temps
-- graphique
-- niveaux
-- musique
-- fond
-- couleur
-'''
