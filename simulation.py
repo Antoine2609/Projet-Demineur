@@ -68,10 +68,8 @@ def surface_tableau():
             # appeler la méthode pour récupérer la Surface de la case (i, j)
             case_surface = surface_case(i, j)
             # poser la Surface de la case (i,j) sur la Surface du tableau de jeu
-            # todo 
+            plateau.blit(case_surface, (i*24, j*24))
 
-    # Blit everything to the screen
-    screen.blit(plateau, (0, 0)) # début des coordonnées en haut à gauche
     pygame.display.flip()
 
 
@@ -150,3 +148,5 @@ côté interface :
 - fond
 - couleur
 '''
+
+# todo souris, boutons restart et niveaux -> faire des fonctions semblables
