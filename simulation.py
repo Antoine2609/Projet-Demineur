@@ -26,81 +26,96 @@ if __name__ == '__main__':
 
     print('Démonstration terminée.')
 
-    # Initialise screen
-    pygame.init()
-    longueur_fenetre = 800
-    largeur_fenetre = 600
-    screen = pygame.display.set_mode((longueur_fenetre, largeur_fenetre))
-    pygame.display.set_caption('Démineur')
-
-    # Fill background
-    background = pygame.Surface(screen.get_size())
-    background = background.convert()
-    background.fill((250, 250, 250))
-
-    # Display some text
-    font = pygame.font.Font(None, 36)
-    text = font.render("Démineur", 1, (10, 10, 10))
-    textpos = text.get_rect()
-    textpos.centerx = background.get_rect().centerx
-    background.blit(text, textpos)
-    
-    # Blit everything to the screen
-    screen.blit(background, (0, 0))
-    pygame.display.flip()
-    
-    # création de la fenêtre
-    
-    # fenetre.fill((250,0,0)) # couleur de la fenêtre
-    # pygame.display.set_caption("Jeu du démineur") # définition de la fenêtre
-
-    # # création de la surface du tableau de jeu
-    # width = height = 500
-    # surface_plateau = pygame.surface((width, height), flags=0, depth=0, masks=None)
-    # surface_plateau = pygame.Surface.fill((250,250,250)) # couleur de la surface
-
-    # nb_cases_cote = niveau()
-
-    run = True
-
-    while run:
-
-        events = pygame.event.get()
-        for event in events:
-            if event.type == QUIT:
-                run = False
-
-        # for i in range(10):
-        #     for j in range(10): # on parcourt les 2 dimensions
-        #         pygame.draw.rect(10, [255]*3, [i*10, j*10, 10, 10], 1)
-
-        screen.blit(background, (0, 0))
-        pygame.display.flip()
-        
-
 def niveau():
     level = input("Choisissez votre niveau : facile, moyen ou difficile : ")
     if level == 'facile':
         return 10 # 10 x 10 (100 cases)
     elif level == 'moyen':
-        return 15 # 15 x 15 (225 cases)
-    elif level == 'difficile':
         return 20 # 20 x 20 (400 cases)
+    elif level == 'difficile':
+        return 25 # 25 x 25 (625 cases)
     else:
         niveau()
 
+def surface_nom_de_fenetre():
+    pygame.display.set_caption('Démineur')
+    # Fill background
+    # dimensions de la surface du nom de la fenêtre
+    width = 200
+    height = 50 
+    background = pygame.Surface((width, height))
+
+    # Display some text
+    font = pygame.font.Font(None, 36)
+    text = font.render("Démineur", True, (255, 0, 0), (250, 250, 250))
+    textpos = text.get_rect()
+    textpos.centerx = background.get_rect().centerx
+    background.blit(text, textpos)
+
+    # Blit everything to the screen
+    screen.blit(background, (600, 0)) # début des coordonnées en haut à gauche
+    pygame.display.flip()
+
+def surface_tableau():
+    # Fill background
+    # dimensions de la surface du tableau de jeu
+    width = height = 600
+    plateau = pygame.Surface((width, height))
+    plateau.fill((150,150,150))
+
+    for i in range(nb_cases_cote):
+        for j in range(nb_cases_cote): # on parcourt les 2 dimensions
+            # appeler la méthode pour récupérer la Surface de la case (i, j)
+            case_surface = surface_case(i, j)
+            # poser la Surface de la case (i,j) sur la Surface du tableau de jeu
+            # todo 
+
+    # Blit everything to the screen
+    screen.blit(plateau, (0, 0)) # début des coordonnées en haut à gauche
+    pygame.display.flip()
 
 
+def surface_case(i: int, j: int) -> pygame.Surface:
+    case = sim.get_case(i, j)
+    nom_fichier = ''
+    if case.get_case_recouverte():
+        if case.get_drapeau():
+            nom_fichier = 'drapeau.png'
+        else:
+            nom_fichier = 'mystere.png'
+    else:
+        if case.get_mine():
+            nom_fichier = 'mine.png'
+        else:
+            nb_mines = sim.nbr_mines_adjacentes_a_case()
+            nom_fichier = '' + nb_mines + '.png'
+    img = pygame.image.load(nom_fichier)
+    img.convert()
+    surface = pygame.Surface(img.get_rect())
+    surface.blit(img, img.get_rect())
+    return surface
 
 
-
-
-
-'''
-run = True
+# Initialise screen
+pygame.init()
+longueur_fenetre = 800
+largeur_fenetre = 600
+screen = pygame.display.set_mode((longueur_fenetre, largeur_fenetre))
 
 nb_cases_cote = niveau()
 
+run = True
+while run:
+    events = pygame.event.get()
+    for event in events:
+        if event.type == QUIT:
+            run = False
+
+    surface_nom_de_fenetre()
+    surface_tableau()
+    pygame.display.flip()
+    
+'''
 # min renvoie la valeur minimale d'une liste, ici la dimension de la fenêtre
 taille_case = min(fenetre.get_size()) // nb_cases_cote - (min(fenetre.get_size()) // nb_cases_cote // nb_cases_cote)
 
