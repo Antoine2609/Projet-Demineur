@@ -11,6 +11,7 @@ class TableauDeJeu:
         self._total_mines = total_mines # nombre de mines dans la matrice
         self.ajout_mines()
         self._cases_a_decouvrir = lignes * colonnes - total_mines
+        self._game_over = False
 
     def get_total_mines(self) -> int:
         return self._total_mines
@@ -24,6 +25,16 @@ class TableauDeJeu:
         renvoie la case ayant pour coordonnées (i ; j)
         '''
         return self._tab[i][j]
+
+    def get_game_over(self):
+        return self._game_over
+
+    def set_game_over(self):
+        self._game_over = True
+        for i in range(self._dimensions_max[0]+1):
+            for j in range(self._dimensions_max[1]+1):
+                if self.get_case(i, j).get_mine():
+                    self.get_case(i, j).set_case_decouverte()
 
     def ajout_mines(self):
         '''
@@ -43,11 +54,11 @@ class TableauDeJeu:
         retourne le nombre de mines adjacentes à cette case
         '''
         nbr_mines_adj = 0
-        for x in range(max(0, i-1), min(self._dimensions_max[0], i+1)):
-            for y in range(max(0, j-1), min(self._dimensions_max[1], j+1)): # gère les cas limites -> cases au bord
+        for x in range(max(0, i-1), min(self._dimensions_max[0], i+1)+1):
+            for y in range(max(0, j-1), min(self._dimensions_max[1], j+1)+1): # gère les cas limites -> cases au bord
                 if self.get_case(x, y).get_mine() == True:
                         nbr_mines_adj += 1
-        return nbr_mines_adj        
+        return nbr_mines_adj
 
 
     def decouvrir_case(self, i: int, j: int) -> int:
@@ -56,20 +67,24 @@ class TableauDeJeu:
         but : révéle cette case si pas de drapeau et révèle les cases non recouvertes si pas de mines adjacentes
         si pas de drapeau : retourne le nombre de mines adjacentes à cette case
         '''
-        if not self.get_case(i, j).get_drapeau():
+        if not (self.get_case(i, j).get_drapeau() or self.get_game_over()): # si ni drapeau et ni mine
             self.get_case(i, j).set_case_decouverte()
             self._cases_a_decouvrir -= 1
             if self.nbr_mines_adjacentes_a_case(i, j) == 0: # si pas de mines autour de la case découverte
-                for x in range(max(0, i-1), min(self._dimensions_max[0], i+1)):
-                    for y in range(max(0, j-1), min(self._dimensions_max[1], j+1)): # gère les cas limites -> cases au bord
+                for x in range(max(0, i-1), min(self._dimensions_max[0], i+1)+1):
+                    for y in range(max(0, j-1), min(self._dimensions_max[1], j+1)+1): # gère les cas limites -> cases au bord
                         if self.get_case(x, y).get_case_recouverte():
                             self.decouvrir_case(x, y) # récurrence
+            if self.get_case(i, j).get_mine(): # si la case est une mine
+                self.set_game_over()
             return self.nbr_mines_adjacentes_a_case(i, j)
-        return -1 # si la case possède un drapeau
+
+        return -1 
 
     def get_nb_cases_a_decouvrir(self):
         '''
         nombre de cases restant à découvrir sans déclencher une mine
         '''
         return self._cases_a_decouvrir
+        
 
