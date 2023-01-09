@@ -1,6 +1,5 @@
 # importation des bibliothèques et des modules indispensables
 from random import randint
-import pygame
 import class_case
 
 # class TableauDeJeu du projet démineur

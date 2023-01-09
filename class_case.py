@@ -1,5 +1,4 @@
 # importation des bibliothèques et des modules indispensables
-import pygame
 
 # class Case du projet démineur
 class Case:
