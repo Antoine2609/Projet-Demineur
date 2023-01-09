@@ -105,17 +105,17 @@ if __name__ == '__main__':
     # Toutes les coordonnées sont en base 0 (i.e. de 0 à (nb_lignes - 1))
     # Dans cet exemple, les lignes iront de 0 à 9, et les colonnes de 0 à 14
     # découverte d'une case aux coordonnées (5, 5)
-    sim.decouvrir_case(5, 5)
+#    sim.decouvrir_case(5, 5)
     # nombre de mines autour de la case aux coordonnées (6, 1)
-    sim.nbr_mines_adjacentes_a_case(6, 1)
+#    sim.nbr_mines_adjacentes_a_case(6, 1)
     # positionnement d'un drapeau sur la case aux coordonnées (8, 11)
-    sim.get_case(8, 11).get_drapeau()
+#    sim.get_case(8, 11).get_drapeau()
     # état de la case aux coordonnées (6, 7) : recouverte ou découverte
-    sim.get_case(6, 7).get_case_recouverte()
+#    sim.get_case(6, 7).get_case_recouverte()
     # présence d'une mine ou non à la case aux coordonnées (2, 10)
-    sim.get_case(2, 10).get_mine()
+#    sim.get_case(2, 10).get_mine()
     # nombre de cases restant à découvrir
-    sim.get_nb_cases_a_decouvrir()
+#    sim.get_nb_cases_a_decouvrir()
 
 #    print('Démonstration terminée.')
 
